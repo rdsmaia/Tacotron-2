@@ -132,14 +132,12 @@ class Tacotron():
 							self.speaker_embedding_table = tf.get_variable('speaker_embeddings', [hp.num_speakers, hp.speaker_dim], dtype=tf.float32)
 						else:
 							semb = np.float32(np.load(hp.dvectors_file))
-							semb[75,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t06/BR-00406/embeddings/mel-BR-00406.balsen1.npy').astype(np.float32)
-							semb[87,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t06/BR-00479/embeddings/mel-BR-00479.balsen2.npy').astype(np.float32)
-							semb[88,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t06/ptBR_m001/embeddings/mel-portuguese_m001_233.npy').astype(np.float32)
-							semb[89,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t06/usp_speaker/embeddings/mel-sample-6108.npy').astype(np.float32)
-							#semb[75,:] = np.load('/home/rmaia/speaker_embeddings/deep-speaker/portuguese_v3/BR-00406/speaker_099_mean.npy').astype(np.float32)
-							#semb[84,:] = np.load('/home/rmaia/speaker_embeddings/deep-speaker/portuguese_v3/BR-00479/speaker_099_mean.npy').astype(np.float32)
-							#semb[95,:] = np.load('/home/rmaia/speaker_embeddings/deep-speaker/portuguese_v3/ptBR_m001/speaker_099_mean.npy').astype(np.float32)
-							#semb[96,:] = np.load('/home/rmaia/speaker_embeddings/deep-speaker/portuguese_v3/usp_speaker/speaker_099_mean.npy').astype(np.float32)
+							if hp.load_specific_spk_embedding:
+								semb[75,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t07/BR-00406/embeddings/mel-BR-00406.balsen1.npy').astype(np.float32)
+								semb[87,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t07/BR-00479/embeddings/mel-BR-00479.balsen2.npy').astype(np.float32)
+								semb[88,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t07/ptBR_m001/embeddings/mel-portuguese_m001_233.npy').astype(np.float32)
+								semb[89,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t07/usp_speaker/embeddings/mel-sample-6108.npy').astype(np.float32)
+								semb[90,:] = np.load('/home/rmaia/speaker_embeddings/TTS/t07/sample_m001/embeddings/mel-sample_001_22050Hz_chunks001.npy').astype(np.float32)
 							self.speaker_embedding_table = tf.get_variable('speaker_embeddings', initializer=semb, trainable=False) * 0.0 + semb
 
 						if (is_training or is_evaluating) and hp.spk_dependent_embedding:
@@ -443,7 +441,19 @@ class Tacotron():
 			#  Device placement
 			with tf.device(tf.train.replica_device_setter(ps_tasks=1, ps_device="/cpu:0", worker_device=gpus[i])):
 				with tf.variable_scope('optimizer') as scope:
-					update_vars = [v for v in self.all_vars if not ('inputs_embedding' in v.name or 'encoder_' in v.name)] if hp.tacotron_fine_tuning else None
+					if hp.tacotron_fine_tuning:
+						#update_vars = [v for v in self.all_vars if not
+						#	('inputs_embedding' in v.name or
+						#	 'encoder_' in v.name)
+						#	]
+						update_vars = [v for v in self.all_vars if
+                                                        ('linear_transform' in v.name or
+							 'stop_token' in v.name or
+                                                         'postnet' in v.name or
+							 'decoder_' in v.name)
+                                                        ]
+					else:
+						update_vars = None
 					gradients = optimizer.compute_gradients(self.tower_loss[i], var_list=update_vars)
 					tower_gradients.append(gradients)
 

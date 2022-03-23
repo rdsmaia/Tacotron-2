@@ -138,11 +138,9 @@ hparams = tf.contrib.training.HParams(
 	speaker_dim = 64,
 	use_dvectors = True,
 	load_specific_spk_embedding = False,
-	dvectors_file = 'embeddings/speaker_embeddings_DS_ptBR_v4_further_training_modified.npy',
-	#dvectors_file = 'embeddings/speaker_embeddings_ge2e_ptBR_t06_modified.npy',
+	dvectors_file = 'embeddings/speaker_embeddings_ge2e_ptBR_t07_modified.npy',
 	spk_dependent_embedding = True,
-	embedding_path = 'embeddings_DS_v4_further_training',
-	#embedding_path = 'embeddings_GE2E_t06',
+	embedding_path = 'embeddings_GE2E_t07',
 	speaker_embeddings_encoder = True,
 	speaker_embeddings_decoder = True,
 	speaker_embeddings_postnet = True,
@@ -159,7 +157,7 @@ hparams = tf.contrib.training.HParams(
 	tacotron_swap_with_cpu = False, #Whether to use cpu as support to gpu for decoder computation (Not recommended: may cause major slowdowns! Only use when critical!)
 
 	#train/test split ratios, mini-batches sizes
-	tacotron_batch_size = 12, #number of training samples on each training steps
+	tacotron_batch_size = 7, #number of training samples on each training steps
 	#Tacotron Batch synthesis supports ~16x the training batch size (no gradients during testing). 
 	#Training Tacotron with unmasked paddings makes it aware of them, which makes synthesis times different from training. We thus recommend masking the encoder.
 	tacotron_synthesis_batch_size = 1, #DO NOT MAKE THIS BIGGER THAN 1 IF YOU DIDN'T TRAIN TACOTRON WITH "mask_encoder=True"!!

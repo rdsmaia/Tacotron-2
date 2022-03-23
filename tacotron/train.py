@@ -82,13 +82,23 @@ def model_train_mode(args, feeder, hparams, global_step):
 			model_name = 'Tacotron'
 		model = create_model(model_name or args.model, hparams)
 		if hparams.predict_linear:
-			model.initialize(feeder.inputs, feeder.input_lengths, feeder.mel_targets, feeder.token_targets, linear_targets=feeder.linear_targets,
-				targets_lengths=feeder.targets_lengths, global_step=global_step,
-				is_training=True, split_infos=feeder.split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			if hparams.spk_dependent_embedding:
+				model.initialize(feeder.inputs, feeder.input_lengths, feeder.mel_targets, feeder.token_targets, linear_targets=feeder.linear_targets,
+					targets_lengths=feeder.targets_lengths, global_step=global_step,
+					is_training=True, split_infos=feeder.split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			else:
+				model.initialize(feeder.inputs, feeder.input_lengths, feeder.mel_targets, feeder.token_targets, linear_targets=feeder.linear_targets,
+					targets_lengths=feeder.targets_lengths, global_step=global_step,
+					is_training=True, split_infos=feeder.split_infos, speaker_id=feeder.speaker_id)
 		else:
-			model.initialize(feeder.inputs, feeder.input_lengths, feeder.mel_targets, feeder.token_targets,
-				targets_lengths=feeder.targets_lengths, global_step=global_step,
-				is_training=True, split_infos=feeder.split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			if hparams.spk_dependent_embedding:
+				model.initialize(feeder.inputs, feeder.input_lengths, feeder.mel_targets, feeder.token_targets,
+					targets_lengths=feeder.targets_lengths, global_step=global_step,
+					is_training=True, split_infos=feeder.split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			else:
+				model.initialize(feeder.inputs, feeder.input_lengths, feeder.mel_targets, feeder.token_targets,
+					targets_lengths=feeder.targets_lengths, global_step=global_step,
+					is_training=True, split_infos=feeder.split_infos, speaker_id=feeder.speaker_id)
 		model.add_loss()
 		model.add_optimizer(global_step)
 		stats = add_train_stats(model, hparams)
@@ -101,13 +111,23 @@ def model_test_mode(args, feeder, hparams, global_step):
 			model_name = 'Tacotron'
 		model = create_model(model_name or args.model, hparams)
 		if hparams.predict_linear:
-			model.initialize(feeder.eval_inputs, feeder.eval_input_lengths, feeder.eval_mel_targets, feeder.eval_token_targets,
-				linear_targets=feeder.eval_linear_targets, targets_lengths=feeder.eval_targets_lengths, global_step=global_step,
-				is_training=False, is_evaluating=True, split_infos=feeder.eval_split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			if hparams.spk_dependent_embedding:
+				model.initialize(feeder.eval_inputs, feeder.eval_input_lengths, feeder.eval_mel_targets, feeder.eval_token_targets,
+					linear_targets=feeder.eval_linear_targets, targets_lengths=feeder.eval_targets_lengths, global_step=global_step,
+					is_training=False, is_evaluating=True, split_infos=feeder.eval_split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			else:
+				model.initialize(feeder.eval_inputs, feeder.eval_input_lengths, feeder.eval_mel_targets, feeder.eval_token_targets,
+					linear_targets=feeder.eval_linear_targets, targets_lengths=feeder.eval_targets_lengths, global_step=global_step,
+					is_training=False, is_evaluating=True, split_infos=feeder.eval_split_infos, speaker_id=feeder.speaker_id)
 		else:
-			model.initialize(feeder.eval_inputs, feeder.eval_input_lengths, feeder.eval_mel_targets, feeder.eval_token_targets,
-				targets_lengths=feeder.eval_targets_lengths, global_step=global_step, is_training=False, is_evaluating=True, 
-				split_infos=feeder.eval_split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			if hparams.spk_dependent_embedding:
+				model.initialize(feeder.eval_inputs, feeder.eval_input_lengths, feeder.eval_mel_targets, feeder.eval_token_targets,
+					targets_lengths=feeder.eval_targets_lengths, global_step=global_step, is_training=False, is_evaluating=True, 
+					split_infos=feeder.eval_split_infos, speaker_id=feeder.speaker_id, spk_embedding=feeder.spk_embedding)
+			else:
+				model.initialize(feeder.eval_inputs, feeder.eval_input_lengths, feeder.eval_mel_targets, feeder.eval_token_targets,
+					targets_lengths=feeder.eval_targets_lengths, global_step=global_step, is_training=False, is_evaluating=True, 
+					split_infos=feeder.eval_split_infos, speaker_id=feeder.speaker_id)
 		model.add_loss()
 		return model
 
