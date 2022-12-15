@@ -73,7 +73,8 @@ def run_eval(args, checkpoint_path, output_dir, hparams, sentences):
 	return eval_dir
 
 def run_synthesis(args, checkpoint_path, output_dir, hparams):
-	GTA = (args.GTA == 'True')
+#	GTA = (args.GTA == 'True')
+	GTA = args.GTA
 	if GTA:
 		synth_dir = os.path.join(output_dir, 'gta')
 
@@ -85,8 +86,7 @@ def run_synthesis(args, checkpoint_path, output_dir, hparams):
 		#Create output path if it doesn't exist
 		os.makedirs(synth_dir, exist_ok=True)
 
-
-	metadata_filename = os.path.join(args.input_dir, 'train.txt')
+	metadata_filename = os.path.join(args.input_dir, 'test.txt_transcribed')
 	log(hparams_debug_string())
 	synth = Synthesizer()
 	synth.load(checkpoint_path, hparams, gta=GTA, speaker_id=args.speaker_id)
@@ -104,12 +104,13 @@ def run_synthesis(args, checkpoint_path, output_dir, hparams):
 	wav_dir = os.path.join(args.input_dir, 'audio')
 	with open(os.path.join(synth_dir, 'map.txt'), 'w') as file:
 		for i, meta in enumerate(tqdm(metadata)):
-			texts = [m[5] for m in meta]
+			texts = [m[6] for m in meta]
 			mel_filenames = [os.path.join(mel_dir, m[1]) for m in meta]
 			wav_filenames = [os.path.join(wav_dir, m[0]) for m in meta]
 			basenames = [os.path.basename(m).replace('.npy', '').replace('mel-', '') for m in mel_filenames]
-			speaker_id = [m[-1] for m in meta]
-			mel_output_filenames, speaker_ids = synth.synthesize(texts, basenames, synth_dir, None, mel_filenames, speaker_id=speaker_id)
+			#speaker_id = [m[-1] for m in meta]
+			#mel_output_filenames, speaker_ids = synth.synthesize(texts, basenames, synth_dir, None, mel_filenames, speaker_id=speaker_id)
+			mel_output_filenames, speaker_ids = synth.synthesize(texts, basenames, synth_dir, None, mel_filenames, speaker_id=args.speaker_id)
 
 			for elems in zip(wav_filenames, mel_filenames, mel_output_filenames, speaker_ids, texts):
 				file.write('|'.join([str(x) for x in elems]) + '\n')

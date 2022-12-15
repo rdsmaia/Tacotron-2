@@ -39,7 +39,7 @@ hparams = tf.contrib.training.HParams(
 	magnitude_power = 2., #The power of the spectrogram magnitude (1. for energy, 2. for power)
 
 	#M-AILABS (and other datasets) trim params (there parameters are usually correct for any data, but definitely must be tuned for specific speakers)
-	trim_silence = False, #Whether to clip silence in Audio (at beginning and end of audio only, not the middle)
+	trim_silence = True, #Whether to clip silence in Audio (at beginning and end of audio only, not the middle)
 	trim_fft_size = 2048, #Trimming window size
 	trim_hop_size = 512, #Trimmin hop length
 	trim_top_db = 40, #Trimming db difference from reference db (smaller==harder trim.)
@@ -137,13 +137,15 @@ hparams = tf.contrib.training.HParams(
 	num_speakers = 140,
 	speaker_dim = 64,
 	use_dvectors = True,
-	load_specific_spk_embedding = True,
-	dvectors_file = 'embeddings/speaker_embeddings_ge2e_ptBR_t07_modified.npy',
-	spk_dependent_embedding = False,
-	embedding_path = 'embeddings_GE2E_t07',
+	load_specific_spk_embedding = False,
+	specific_speakerid = 97,
+	specific_spk_embedding = '',
+	dvectors_file = 'embeddings/speaker_embeddings_GE2E_t09.npy',
+	spk_dependent_embedding = True,
+	embedding_path = 'embeddings_GE2E_t09',
 	speaker_embeddings_encoder = True,
-	speaker_embeddings_decoder = True,
-	speaker_embeddings_postnet = True,
+	speaker_embeddings_decoder = False,
+	speaker_embeddings_postnet = False,
 	reset_global_step = False,
 	initial_global_step = 0,
 	###########################################################################################################################################
