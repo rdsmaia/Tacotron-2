@@ -59,6 +59,8 @@ python transcribe.py --file1 test_sentences_ptBR.txt --file2 test_sentences_ptBR
 python synthesize.py --name v001 --text_list test_sentences_ptBR_transcriptions.txt --speaker_id 78
 ```
 
+* Synthesize speech using a pre-trained HiFi-GAN model (coming soon...)
+
 # Credits
 
 * Rayhane Mamma's Tacotron: https://github.com/Rayhane-mamah/Tacotron-2
