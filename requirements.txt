@@ -1,0 +1,7 @@
+librosa==0.8.0
+scipy==1.5.2
+tensorflow==1.14
+unidecode
+soundfile
+pandas
+phonemizer
