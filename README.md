@@ -1,4 +1,4 @@
-# Tacotron code for multilingual ptBR training
+# Tacotron code for multispeaker ptBR TTS
 
 Tacotron repo to train a multispeaker ptBR TTS.
 
@@ -19,8 +19,10 @@ pip install -r requirements.txt
 # Data preparation and preprocessing
 
 * Download the data from https://www.kaggle.com/datasets/mediatechlab/gneutralspeech and:
-(1) Downsample the waveforms from 44.1kHz to 22.05kHz
-(2) create a metadata file containing filename, normalized text and speaker ids.
+
+- Downsample the waveforms from 44.1kHz to 22.05kHz.
+- Create a metadata file containing filename, normalized text and speaker ids.
+
 ```shell
 unzip archive.zip
 mkdir -p smt_propor2020/wavs
@@ -45,4 +47,20 @@ python transcribe_metadata.py --file1 training_data/train.txt --file2 training_d
 python train.py --name v001 --tacotron_training training_data/train_transcribed.txt
 ```
 
+# Synthesis
 
+* Transcribe your text (run g2p)
+```shell
+python transcribe.py --file1 test_sentences_ptBR.txt --file2 test_sentences_ptBR_transcriptions.txt
+```
+
+* Run the synthesizer (phonemes -> mel spectrograms)
+```shell
+python synthesize.py --name v001 --text_list test_sentences_ptBR_transcriptions.txt --speaker_id 78
+```
+
+# Credits
+
+* Rayhane Mamma's Tacotron: https://github.com/Rayhane-mamah/Tacotron-2
+* Jungil Kong's HiFi-GAN: https://github.com/jik876/hifi-gan
+* Phonemizer: https://github.com/bootphon/phonemizer
