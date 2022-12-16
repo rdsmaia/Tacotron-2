@@ -39,11 +39,11 @@ def main():
 	df2.insert(loc=7, column='speaker_id', value=df2[6])
 	graphemes = ''
 	phonemes = ''
-	for i, s in enumerate(df2[5]):
+	for i, s in tqdm(enumerate(df2[5]), total=len(df2[5])):
 		t = transcribe_sentence(s, lang)
 		df2[6][i] = t
 		#print(f'{s} --> {t}\n')
-		print('Progress : [ {} / {} ==> {:.5f}% conluded ]'.format(i, len(df2), i/len(df2)*100), end='\r')
+#		print('Progress : [ {} / {} ==> {:.5f}% conluded ]'.format(i, len(df2), i/len(df2)*100), end='\r')
 		graphemes += s
 		phonemes += t
 	df2.to_csv(file2, sep="|", header=None, index=False)
